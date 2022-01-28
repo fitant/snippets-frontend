@@ -2,13 +2,23 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
+import {MonacoEditorModule} from "ngx-monaco-editor";
+import {FormsModule} from "@angular/forms";
+import { MenubarComponent } from './menubar/menubar.component';
+import { HttpClientModule } from '@angular/common/http';
+import {ActivatedRoute} from "@angular/router";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    MenubarComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    MonacoEditorModule.forRoot(),
+    FormsModule,
+    HttpClientModule,
+    ActivatedRoute
   ],
   providers: [],
   bootstrap: [AppComponent]
