@@ -1,6 +1,9 @@
-import {Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
-import {EditorOptions, DefaultEditorOptions} from '../app-editor.model'
-import {EmptySnippet, SnippetAction, SnippetMetadataModel, SnippetModel} from "../snippet.model";
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {DefaultEditorOptions, EditorOptions, EditorStates} from '../app-editor.model'
+import {EmptySnippet, SnippetModel} from "../snippet.model";
+import {list, smallList} from "./menubar-consts.component";
+import {SnippetsService} from "../snippets.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-menubar',
@@ -8,110 +11,101 @@ import {EmptySnippet, SnippetAction, SnippetMetadataModel, SnippetModel} from ".
   styleUrls: ['./menubar.component.sass']
 })
 export class MenubarComponent implements OnInit {
-  @Input() snippet: SnippetModel = EmptySnippet;
+  @Input() snippetData: string = ''
+  @Output() snippetDataChange: EventEmitter<string> = new EventEmitter<string>()
   @Output() editorOptions = new EventEmitter<EditorOptions>();
-  @Output() snippetMetadata = new EventEmitter<SnippetMetadataModel>();
-  @Output() triggerAction = new EventEmitter<SnippetAction>();
+  @Output() editorSelection = new EventEmitter<EditorStates>();
 
+  // Editor Related
   themes: string[] = [
     'vs',
     'vs-dark',
     'hc-black'
   ]
   selectedTheme: string = DefaultEditorOptions.theme;
-
-  private sort = (a: string, b: string) => {
-    if (a < b) {
-      return -1;
-    }
-    if (a > b) {
-      return 1;
-    }
-    return 0;
-  }
-
-  private smallList: string[] = [
-    'markdown',
-    'plaintext',
-    'javascript',
-    'python',
-    'c++'
-  ].sort(this.sort)
-  private largeList: string[] = [
-    ...this.smallList,
-    'typescript',
-    'css',
-    'less',
-    'scss',
-    'json',
-    'html',
-    'xml',
-    'php',
-    'c#',
-    'razor',
-    'diff',
-    'java',
-    'vb',
-    'coffeescript',
-    'handlebars',
-    'pug',
-    'f#',
-    'lua',
-    'powershell',
-    'ruby',
-    'sass',
-    'r'
-  ].sort(this.sort)
-  languages = this.smallList
-  selectedLanguage: string = EmptySnippet.metadata.language;
-  private showAll: boolean = false;
-  ephemeral: boolean = this.snippet.metadata.ephemeral;
   fontSize: number = DefaultEditorOptions.fontSize
-  constructor() {
+
+  // Menubar Related
+  private smallList = smallList
+  private largeList = list
+  languages = this.smallList
+  private showAll: boolean = false;
+
+  // Snippet
+  snippet: SnippetModel = EmptySnippet
+
+  constructor(private service: SnippetsService, private router: Router) {
   }
 
-  onChange() {
+  private isEditorReadOnly = (): boolean => {
+    return this.snippet.metadata.id === ''
+  }
+
+  onChange = () => {
     this.editorOptions.emit({
       theme: this.selectedTheme,
-      language: this.selectedLanguage,
+      language: this.snippet.metadata.language,
       fontSize: this.fontSize,
-    })
-    this.snippetMetadata.emit({
-      language: this.selectedLanguage,
-      ephemeral: this.ephemeral
+      readOnly: this.isEditorReadOnly()
     })
   }
 
-  swapList(): void {
+  swapList = (): void => {
     this.showAll = !this.showAll
-    if (this.showAll) {
+    if (this.showAll
+    ) {
       this.languages = this.largeList
     } else {
       this.languages = this.smallList
     }
   }
 
-  onChangeFont(fontSize: string): void {
+  onChangeFont = (fontSize: string): void => {
     this.fontSize = parseInt(fontSize)
     this.onChange()
   }
 
-  onSave(): void {
-    this.triggerAction.emit(
-      SnippetAction.save
-    )
+  onSave = (): void => {
+    this.snippet.data.snippet = this.snippetData
+    this.service.post(this.snippet).subscribe(data => {
+      const urlParts = data.URL.split('/')
+      const id = urlParts[urlParts.length - 1]
+      this.snippet.metadata.id = id
+      this.router.navigate(['/' + id]).then(() => {
+          this.toggleEditor(true)
+        }
+      );
+    })
   }
 
-  onEdit(): void {
-    this.triggerAction.emit(
-      SnippetAction.edit
-    )
+  onEdit = (): void => {
+    this.router.navigate(['/']).then(() => {
+      this.toggleEditor(false)
+      this.snippet.metadata.id = ""
+    });
+    // Edit
   }
 
-  toggleEphemeral(): void {
-    this.ephemeral = !this.ephemeral
+  toggleEphemeral = (): void => {
+    this.snippet.metadata.ephemeral = !this.snippet.metadata.ephemeral
+  }
+
+  toggleEditor = (readOnly: boolean) => {
+    readOnly ? this.editorSelection.emit(EditorStates.ReadOnly) : this.editorSelection.emit(EditorStates.ReadWrite)
   }
 
   ngOnInit(): void {
+    const paths = window.location.pathname.split('/')
+    const id = paths[paths.length - 1]
+    if (id != "") {
+      this.service.get(id).subscribe(snippet => {
+          this.snippet = snippet
+          this.snippetDataChange.emit(snippet.data.snippet)
+          console.log(this.snippet)
+          // Make Editor ReadOnly
+          this.toggleEditor(true)
+        }
+      )
+    }
   }
 }

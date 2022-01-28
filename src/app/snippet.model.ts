@@ -5,13 +5,8 @@ export interface SnippetModel {
   }
 }
 
-export enum SnippetAction {
-  save,
-  edit
-}
-
 export interface SnippetMetadataModel {
-  id?: string
+  id: string
   language: string
   ephemeral: boolean
   createdOn?: number
@@ -20,6 +15,7 @@ export interface SnippetMetadataModel {
 
 export const EmptySnippet: SnippetModel = {
   metadata: {
+    id: '',
     language: "plaintext",
     ephemeral: true
   },

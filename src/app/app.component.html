@@ -1,6 +1,9 @@
 <div class="flex bg-primary">
   <!--  We have two instances of monaco cuz it doesn't support switching between read and write mode -->
-  <ngx-monaco-editor *ngIf="snippet.metadata.id != undefined" [options]="readOnlyEditorOptions" [(ngModel)]="snippet.data.snippet" class="w-4/5 flex" style="height: auto!important;"></ngx-monaco-editor>
-  <ngx-monaco-editor *ngIf="snippet.metadata.id == undefined" [options]="readWriteEditorOptions" [(ngModel)]="snippet.data.snippet" class="w-4/5 flex" style="height: auto!important;"></ngx-monaco-editor>
-  <app-menubar class="w-1/5" (editorOptions)="onUpdateEditorOptions($event)" (snippetMetadata)="onUpdateSnippetMetadata($event)" (triggerAction)="handleAction($event)" [snippet]="snippet"></app-menubar>
+  <ngx-monaco-editor *ngIf="showReadOnlyEditor" [options]="readOnlyEditorOptions" [(ngModel)]="snippetData"
+                     class="w-4/5 flex" style="height: auto!important;"></ngx-monaco-editor>
+  <ngx-monaco-editor *ngIf="!showReadOnlyEditor" [options]="readWriteEditorOptions" [(ngModel)]="snippetData"
+                     class="w-4/5 flex" style="height: auto!important;"></ngx-monaco-editor>
+  <app-menubar class="w-1/5" (editorOptions)="onUpdateEditorOptions($event)" [(snippetData)]="snippetData"
+               (editorSelection)="handleEditorSwitch($event)"></app-menubar>
 </div>

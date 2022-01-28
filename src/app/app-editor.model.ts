@@ -3,7 +3,7 @@ import {EmptySnippet} from "./snippet.model";
 export interface EditorOptions {
   theme: string
   language: string
-  readOnly?: boolean
+  readOnly: boolean
   fontSize: number
 }
 
@@ -12,4 +12,9 @@ export const DefaultEditorOptions = {
   language: EmptySnippet.metadata.language,
   fontSize: 16,
   readOnly: false
+}
+
+export enum EditorStates {
+  ReadOnly,
+  ReadWrite
 }

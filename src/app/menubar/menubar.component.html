@@ -25,9 +25,10 @@
       </select>
     </div>
     <div class="px-8 pb-8">
-      <label for="fontSize" class="text-center font-mono" >Font Size</label>
+      <label for="fontSize" class="text-center font-mono">Font Size</label>
       <br>
-      <input #fontSlider type="range" id="fontSize" max="22" min="12" (change)="onChangeFont(fontSlider.value)" [value]="fontSize" step="1" class="w-full form-check-input">
+      <input #fontSlider type="range" id="fontSize" max="22" min="12" (change)="onChangeFont(fontSlider.value)"
+             [value]="fontSize" step="1" class="w-full form-check-input">
     </div>
     <div class="items-center form-check pt-6 pb-0 px-8">
       <input type="checkbox" id="showAll" (change)="swapList()" class="form-check-input">
@@ -35,7 +36,7 @@
     </div>
     <div class="items-center px-8 mt-0 mb-6">
       <label for="language" class="text-center font-mono pb-2">Language:</label>
-      <select id="language" [(ngModel)]="selectedLanguage" class="form-select appearance-none
+      <select id="language" [(ngModel)]="snippet.metadata.language" class="form-select appearance-none
       block
       w-full
       px-1
@@ -56,16 +57,17 @@
       </select>
     </div>
     <div class="items-stretch form-check px-8 pb-4">
-      <input type="checkbox" id="ephemeral" (change)="toggleEphemeral()" class="form-check-input" [checked]="ephemeral">
+      <input type="checkbox" id="ephemeral" class="form-check-input"
+            [(ngModel)]="this.snippet.metadata.ephemeral" >
       <label for="ephemeral" class="text-center font-mono"> Delete after 7 days</label>
     </div>
     <div class="flex space-x-2 justify-center">
-      <button *ngIf="this.snippet.metadata.id === undefined" type="button" (click)="onSave()"
+      <button *ngIf="this.snippet.metadata.id === ''" type="button" (click)="onSave()"
               class="inline-block w-5/6 px-6 py-2.5 bg-purple-800 text-white font-medium text-xs leading-tight uppercase rounded shadow-lg hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
-        <p *ngIf="!ephemeral">Save</p>
-        <p *ngIf="ephemeral">Save for 7 days</p>
+        <p *ngIf="!this.snippet.metadata.ephemeral">Save</p>
+        <p *ngIf="this.snippet.metadata.ephemeral">Save for 7 days</p>
       </button>
-      <button *ngIf="this.snippet.metadata.id !== undefined" type="button"
+      <button *ngIf="this.snippet.metadata.id !== ''" type="button" (click)="onEdit()"
               class="inline-block w-5/6 px-6 py-2.5 bg-purple-800 text-white font-medium text-xs leading-tight uppercase rounded shadow-lg hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
         Edit
       </button>
