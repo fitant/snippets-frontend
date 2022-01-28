@@ -1,8 +1,7 @@
-import {Component, Injectable} from '@angular/core';
+import {Component, Injectable, OnInit} from '@angular/core';
 import {DefaultEditorOptions, EditorOptions} from "./app-editor.model";
 import {EmptySnippet, SnippetAction, SnippetMetadataModel, SnippetModel} from './snippet.model'
 import {SnippetsService} from "./snippets.service";
-import {AfterViewChecked} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 
 @Component({
@@ -11,7 +10,7 @@ import {ActivatedRoute} from "@angular/router";
   styleUrls: ['./app.component.sass']
 })
 @Injectable()
-export class AppComponent implements AfterViewChecked {
+export class AppComponent implements OnInit {
   title = 'xBin';
   snippet: SnippetModel = EmptySnippet
 
@@ -51,8 +50,15 @@ export class AppComponent implements AfterViewChecked {
     }
   }
 
-  ngAfterViewChecked() {
-    console.log(this.route.url)
+  ngOnInit() {
+    const paths = window.location.pathname.split('/')
+    const id = paths[paths.length - 1]
+    if (id != "") {
+      this.service.get(id).subscribe(snippet => {
+          this.snippet = snippet
+        }
+      )
+    }
   }
 
   onUpdateSnippetMetadata($event: SnippetMetadataModel) {

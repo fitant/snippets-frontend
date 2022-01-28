@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {SnippetModel} from "./snippet.model";
+import {EmptySnippet, SnippetModel} from "./snippet.model";
 import {Observable} from "rxjs";
 
 @Injectable({
@@ -13,7 +13,14 @@ export class SnippetsService {
   }
 
   get(id: string): Observable<SnippetModel> {
-    return this.http.get<SnippetModel>(this.baseURL + "/" + id)
+    // if (id === undefined) {
+    //   return new Observable(subscriber => {
+    //     subscriber.next(EmptySnippet)
+    //   })
+    // }
+    const url = this.baseURL + "/" + id
+    console.log(url)
+    return this.http.get<SnippetModel>(url)
   }
 
   post(snippet: SnippetModel): Observable<PostResponse> {
