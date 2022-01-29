@@ -40,6 +40,7 @@ export class AppComponent implements OnInit {
     // Update editor options then update read only
     // And rw editor options
     this.editorOptions = $event
+    this.showReadOnlyEditor = this.editorOptions.readOnly
     this.readWriteEditorOptions = {
       ...this.editorOptions,
       readOnly: false
