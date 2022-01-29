@@ -38,7 +38,7 @@ export class MenubarComponent implements OnInit {
   }
 
   private isEditorReadOnly = (): boolean => {
-    return this.snippet.metadata.id === ''
+    return this.snippet.metadata.id === '' || this.snippet.metadata.id === undefined
   }
 
   onChange = () => {
@@ -52,12 +52,7 @@ export class MenubarComponent implements OnInit {
 
   swapList = (): void => {
     this.showAll = !this.showAll
-    if (this.showAll
-    ) {
-      this.languages = this.largeList
-    } else {
-      this.languages = this.smallList
-    }
+    this.languages = this.showAll ? this.largeList : this.smallList
   }
 
   onChangeFont = (fontSize: string): void => {
@@ -83,11 +78,21 @@ export class MenubarComponent implements OnInit {
       this.toggleEditor(false)
       this.snippet.metadata.id = ""
     });
-    // Edit
   }
 
-  toggleEphemeral = (): void => {
-    this.snippet.metadata.ephemeral = !this.snippet.metadata.ephemeral
+  loadSnippet = () => {
+    const paths = window.location.pathname.split('/')
+    const id = paths[paths.length - 1]
+    if (id != "") {
+      this.service.get(id).subscribe(snippet => {
+          this.snippet = snippet
+          this.snippetDataChange.emit(snippet.data.snippet)
+          // Trigger Editor Options update
+          // Updates Language and readOnly state
+          this.onChange()
+        }
+      )
+    }
   }
 
   toggleEditor = (readOnly: boolean) => {
@@ -95,17 +100,6 @@ export class MenubarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const paths = window.location.pathname.split('/')
-    const id = paths[paths.length - 1]
-    if (id != "") {
-      this.service.get(id).subscribe(snippet => {
-          this.snippet = snippet
-          this.snippetDataChange.emit(snippet.data.snippet)
-          console.log(this.snippet)
-          // Make Editor ReadOnly
-          this.toggleEditor(true)
-        }
-      )
-    }
+    this.loadSnippet()
   }
 }
