@@ -40,6 +40,10 @@ export class MenubarComponent implements OnInit {
   constructor(private service: SnippetsService, private router: Router) {
   }
 
+  isThemeSelected = (theme: string): boolean => {
+    return theme === this.selectedTheme
+  }
+
   onChange = () => {
     this.editorOptions.emit({
       theme: this.selectedTheme,
@@ -54,7 +58,14 @@ export class MenubarComponent implements OnInit {
   }
 
   onChangeFont = (fontSize: string): void => {
+    localStorage.setItem("fontSize", fontSize)
     this.fontSize = parseInt(fontSize)
+    this.onChange()
+  }
+
+  onChangeTheme = (theme: string) => {
+    localStorage.setItem("theme", theme)
+    this.selectedTheme = theme
     this.onChange()
   }
 
@@ -117,6 +128,17 @@ export class MenubarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const theme = localStorage.getItem("theme")
+    if (theme !== null) {
+      this.selectedTheme = theme
+    }
+
+    const fontSize = localStorage.getItem("fontSize")
+    if (fontSize !== null) {
+      this.fontSize = parseInt(fontSize)
+    }
+
+    this.onChange()
     this.loadSnippet()
   }
 }

@@ -6,7 +6,7 @@
     <h4 class="font-mono text-center text-xl pb-4 pt-6">Editor Options</h4>
     <div class="items-center px-8">
       <label for="theme" class="text-center font-mono pb-2">Theme:</label>
-      <select id="theme" [(ngModel)]="selectedTheme" class="form-select appearance-none
+      <select id="theme" #themeSelector class="form-select appearance-none
       block
       w-full
       px-1
@@ -21,8 +21,8 @@
       ease-in-out
       mx-0
       mt-0.5
-      focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" (change)="onChange()">
-        <option *ngFor="let theme of themes; index as i" [selected]="i===0" [value]="theme">{{theme}}</option>
+      focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" (change)="onChangeTheme(themeSelector.value)">
+        <option *ngFor="let theme of themes; index as i" [selected]="isThemeSelected(theme)" [value]="theme">{{theme}}</option>
       </select>
     </div>
     <div class="px-8">
