@@ -32,6 +32,8 @@ export class MenubarComponent implements OnInit {
   languages = this.smallList
   private showAll: boolean = false;
 
+  loading: boolean = false
+
   // Snippet
   snippet: SnippetModel = EmptySnippet
 
@@ -58,6 +60,10 @@ export class MenubarComponent implements OnInit {
 
   onSave = (): void => {
     this.snippet.data.snippet = this.snippetData
+    if (this.snippet.data.snippet == "") {
+      return
+    }
+    this.loading = true
     this.service.post(this.snippet).subscribe(data => {
       const urlParts = data.URL.split('/')
       const id = urlParts[urlParts.length - 1]
@@ -66,6 +72,7 @@ export class MenubarComponent implements OnInit {
           this.toggleEditor(true)
         }
       );
+      this.loading = false
     })
   }
 
@@ -87,6 +94,14 @@ export class MenubarComponent implements OnInit {
           // Updates Language and readOnly state
           this.onChange()
           this.toggleEditor(true)
+        }, error => {
+          switch (error.status) {
+            case 404:
+              this.snippetDataChange.emit("Error 404: Not Found")
+              break
+            case 500:
+              this.snippetDataChange.emit("An Internal Server Error Occurred while loading data")
+          }
         }
       )
     }
