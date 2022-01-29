@@ -1,5 +1,5 @@
 import {Component, Injectable, OnInit} from '@angular/core';
-import {DefaultEditorOptions, EditorOptions, EditorStates} from "./app-editor.model";
+import {DefaultEditorOptions, EditorOptions} from "./app-editor.model";
 
 @Component({
   selector: 'app-root',
@@ -25,22 +25,10 @@ export class AppComponent implements OnInit {
   constructor() {
   }
 
-  handleEditorSwitch($event: EditorStates) {
-    switch ($event) {
-      case EditorStates.ReadOnly:
-        this.showReadOnlyEditor = true
-        break
-      case  EditorStates.ReadWrite:
-        this.showReadOnlyEditor = false
-        break
-    }
-  }
-
   onUpdateEditorOptions($event: EditorOptions) {
     // Update editor options then update read only
     // And rw editor options
     this.editorOptions = $event
-    this.showReadOnlyEditor = this.editorOptions.readOnly
     this.readWriteEditorOptions = {
       ...this.editorOptions,
       readOnly: false

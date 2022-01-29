@@ -5,5 +5,5 @@
   <ngx-monaco-editor *ngIf="!showReadOnlyEditor" [options]="readWriteEditorOptions" [(ngModel)]="snippetData"
                      class="w-4/5 flex" style="height: auto!important;"></ngx-monaco-editor>
   <app-menubar class="w-1/5" (editorOptions)="onUpdateEditorOptions($event)" [(snippetData)]="snippetData"
-               (editorSelection)="handleEditorSwitch($event)"></app-menubar>
+               [(readOnlyEditor)]="showReadOnlyEditor"></app-menubar>
 </div>

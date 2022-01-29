@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {DefaultEditorOptions, EditorOptions, EditorStates} from '../app-editor.model'
+import {DefaultEditorOptions, EditorOptions} from '../app-editor.model'
 import {EmptySnippet, SnippetModel} from "../snippet.model";
 import {list, smallList} from "./menubar-consts.component";
 import {SnippetsService} from "../snippets.service";
@@ -14,7 +14,8 @@ export class MenubarComponent implements OnInit {
   @Input() snippetData: string = ''
   @Output() snippetDataChange: EventEmitter<string> = new EventEmitter<string>()
   @Output() editorOptions = new EventEmitter<EditorOptions>();
-  @Output() editorSelection = new EventEmitter<EditorStates>();
+  @Input() readOnlyEditor: boolean = false;
+  @Output() readOnlyEditorChange = new EventEmitter<boolean>();
 
   // Editor Related
   themes: string[] = [
@@ -37,16 +38,11 @@ export class MenubarComponent implements OnInit {
   constructor(private service: SnippetsService, private router: Router) {
   }
 
-  private isEditorReadOnly = (): boolean => {
-    return this.snippet.metadata.id === '' || this.snippet.metadata.id === undefined
-  }
-
   onChange = () => {
     this.editorOptions.emit({
       theme: this.selectedTheme,
       language: this.snippet.metadata.language,
       fontSize: this.fontSize,
-      readOnly: this.isEditorReadOnly()
     })
   }
 
@@ -90,13 +86,19 @@ export class MenubarComponent implements OnInit {
           // Trigger Editor Options update
           // Updates Language and readOnly state
           this.onChange()
+          this.toggleEditor(true)
         }
       )
     }
   }
 
+  goHome = () => {
+    const location = window.location.href.toString().split('/')
+    window.location.href = location[0] + "//" + location[2]
+  }
+
   toggleEditor = (readOnly: boolean) => {
-    readOnly ? this.editorSelection.emit(EditorStates.ReadOnly) : this.editorSelection.emit(EditorStates.ReadWrite)
+    readOnly ? this.readOnlyEditorChange.emit(true) : this.readOnlyEditorChange.emit(false)
   }
 
   ngOnInit(): void {
