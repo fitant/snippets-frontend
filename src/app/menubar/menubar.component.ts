@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {DefaultEditorOptions, EditorOptions} from '../app-editor.model'
 import {EmptySnippet, SnippetModel} from "../snippet.model";
 import {list, smallList} from "./menubar-consts.component";
-import {SnippetsService} from "../snippets.service";
+import {BaseURL, SnippetsService} from "../snippets.service";
 import {Router} from "@angular/router";
 
 @Component({
@@ -95,8 +95,7 @@ export class MenubarComponent implements OnInit {
   }
 
   loadSnippet = () => {
-    const paths = window.location.pathname.split('/')
-    const id = paths[paths.length - 1]
+    const id = this.getID()
     if (id != "") {
       this.service.get(id).subscribe(snippet => {
           this.snippet = snippet
@@ -118,9 +117,18 @@ export class MenubarComponent implements OnInit {
     }
   }
 
+  getID = (): string => {
+    const paths = window.location.pathname.split('/')
+    return paths[paths.length - 1]
+  }
+
   goHome = () => {
     const location = window.location.href.toString().split('/')
     window.location.href = location[0] + "//" + location[2]
+  }
+
+  goRaw = () => {
+    window.location.href = BaseURL + "/r/" + this.getID()
   }
 
   toggleEditor = (readOnly: boolean) => {
