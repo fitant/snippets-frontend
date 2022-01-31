@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SnippetModel} from "./snippet.model";
 import {Observable} from "rxjs";
+import { environment } from "../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,7 @@ export class SnippetsService {
   }
 }
 
-export const BaseURL: string = "http://127.0.0.1:8080/snippets"
+export const BaseURL: string = environment.baseUrl
 
 export interface PostResponse {
   URL: string
