@@ -111,6 +111,9 @@ export class MenubarComponent implements OnInit {
               break
             case 500:
               this.snippetDataChange.emit("An Internal Server Error Occurred while loading data")
+              break
+            default:
+              this.snippetDataChange.emit("Something went wrong, please try again later")
           }
         }
       )
@@ -125,6 +128,11 @@ export class MenubarComponent implements OnInit {
   goHome = () => {
     const location = window.location.href.toString().split('/')
     window.location.href = location[0] + "//" + location[2]
+  }
+
+  goAbout = () => {
+    const location = window.location.href.toString().split('/')
+    window.location.href = location[0] + "//" + location[2] + "/About"
   }
 
   goRaw = () => {
