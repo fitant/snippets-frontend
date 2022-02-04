@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl: "http://apiv1alpha.westeurope.azurecontainer.io/snippets/snippets"
+  baseUrl: "https://api.fitant.cloud/snippets/v1/snippets"
 };
