@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl: "https://fitant.cloud/snippets"
+  baseUrl: "https://snippets.fitant.cloud/api"
 };
