@@ -125,16 +125,6 @@ export class MenubarComponent implements OnInit {
     return paths[paths.length - 1]
   }
 
-  goHome = () => {
-    const location = window.location.href.toString().split('/')
-    window.location.href = location[0] + "//" + location[2]
-  }
-
-  goAbout = () => {
-    const location = window.location.href.toString().split('/')
-    window.location.href = location[0] + "//" + location[2] + "/About"
-  }
-
   goRaw = () => {
     window.location.href = BaseURL + "/r/" + this.getID()
   }
