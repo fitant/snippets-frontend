@@ -17,6 +17,7 @@ jobs:
   - name: build-and-push
     plan:
       - get: snippets-source
+        trigger: true
       - task: build-task-image
         privileged: true
         config:
