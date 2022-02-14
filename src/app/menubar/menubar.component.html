@@ -82,6 +82,9 @@
       </button>
     </div>
   </div>
+  <div class="my-3 mx-8 py-2 px-5 bg-gray-300 text-gray-900 rounded-md text-sm border border-gray-400 flex" *ngIf="alertMessage !== ''">
+    <span><strong>Error:</strong> {{ alertMessage | titlecase }}</span>
+  </div>
   <div>
     <a class="font-mono text-center text-l mt-4 mb-3 cursor-pointer block" href="/About">ℹ️ About</a>
     <a class="font-mono text-center text-l my-3  cursor-pointer block" href="https://github.com/fitant" target="_blank">GitHub</a>

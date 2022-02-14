@@ -33,6 +33,14 @@ export class MenubarComponent implements OnInit {
   private showAll: boolean = false;
 
   loading: boolean = false
+  alertMessage: string = ""
+
+  alert = (message: string) => {
+    this.alertMessage = message
+    setTimeout(() => {
+      this.alertMessage = "";
+    }, 10_000);
+  }
 
   // Snippet
   snippet: SnippetModel = EmptySnippet
@@ -72,6 +80,7 @@ export class MenubarComponent implements OnInit {
   onSave = (): void => {
     this.snippet.data.snippet = this.snippetData
     if (this.snippet.data.snippet == "") {
+      this.alert("cannot save empty snippet")
       return
     }
     this.loading = true
@@ -105,16 +114,18 @@ export class MenubarComponent implements OnInit {
           this.onChange()
           this.toggleEditor(true)
         }, error => {
-          switch (error.status) {
-            case 404:
-              this.snippetDataChange.emit("Error 404: Not Found")
-              break
-            case 500:
-              this.snippetDataChange.emit("An Internal Server Error Occurred while loading data")
-              break
-            default:
-              this.snippetDataChange.emit("Something went wrong, please try again later")
-          }
+          this.router.navigate(['/']).then(() => {
+            switch (error.status) {
+              case 404:
+                this.alert("snippet not found")
+                break
+              case 500:
+                this.alert("an internal server occurred")
+                break
+              default:
+                this.alert("something went wrong")
+            }
+          });
         }
       )
     }
